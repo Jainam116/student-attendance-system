@@ -31,13 +31,16 @@ def home():
 
 @app.route('/generate_qr', methods=['POST'])
 def generate_qr():
-    lecture_id = request.form['lecture_id']
-    timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    qr_data = f"{lecture_id}|{timestamp}"
-    img = qrcode.make(qr_data)
-    qr_path = os.path.join(QR_FOLDER, f"{lecture_id}.png")
-    img.save(qr_path)
-    return render_template('show_qr.html', qr_path=qr_path)
+    try:
+        lecture_id = request.form['lecture_id']
+        timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        qr_data = f"{lecture_id}|{timestamp}"
+        img = qrcode.make(qr_data)
+        qr_path = os.path.join(QR_FOLDER, f"{lecture_id}.png")
+        img.save(qr_path)
+        return render_template('show_qr.html', qr_path=qr_path)
+    except Exception as e:
+        return f"Error generating QR: {e}", 500
 
 @app.route('/mark_attendance', methods=['POST'])
 def mark_attendance():
